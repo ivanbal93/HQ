@@ -13,6 +13,7 @@ class LessonSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    lessons = LessonSerializer(many=True, read_only=True)
     class Meta:
         model = Product
         fields = [
@@ -20,5 +21,6 @@ class ProductSerializer(serializers.ModelSerializer):
             'author',
             'start_datetime',
             'price',
-            'lessons_amount'
+            'lessons_amount',
+            'lessons'
         ]

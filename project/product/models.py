@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -62,18 +63,16 @@ class Group(models.Model):
 
 
 class Student(models.Model):
-    name = models.CharField(
-        default='Имя студента',
-        max_length=100,
-        null=False)
-    password = models.CharField(
-        default='123',
-        max_length=8,
-        null=False)
     group = models.ManyToManyField(Group, through='StudentGroup')
+    product = models.ManyToManyField(Product, through='StudentProduct')
+    user = models.OneToOneField(
+        User,
+        related_name='student',
+        on_delete=models.CASCADE
+    )
 
     def __str__(self):
-        return self.name
+        return f'{self.user}'
 
 
 class StudentGroup(models.Model):
@@ -82,4 +81,13 @@ class StudentGroup(models.Model):
 
     def __str__(self):
         return (f'{self.group}, '
+                f'{self.student}')
+
+
+class StudentProduct(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return (f'{self.product}, '
                 f'{self.student}')
